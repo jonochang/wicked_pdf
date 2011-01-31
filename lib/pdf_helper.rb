@@ -58,6 +58,6 @@ module PdfHelper
     end
 
     def externals_to_absolute_path(html) 
-      html.gsub(/\/(stylesheets|images|system)\//) {|s| "http://#{request.host_with_port}/#{$1}/" } 
+      html.gsub(/(src|href)=('|")\//) { |s| "#{$1}=#{$2}#{request.protocol}#{request.host_with_port}/" }
     end
 end
