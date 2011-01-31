@@ -46,8 +46,9 @@ module PdfHelper
       [:header, :footer].each do |hf|
         if options[hf] && options[hf][:html] && options[hf][:html][:template]
           WickedPdfTempfile.open("wicked_pdf.html") do |f|
-            f << render_to_string(:template => options[hf][:html][:template],
-                                  :layout => options[:layout])
+            html_string = externals_to_absolute_path(render_to_string(:template => options[hf][:html][:template],
+                                  :layout => options[:layout]))
+            f << html_string
             options[hf][:html].delete(:template)
             options[hf][:html][:url] = "file://#{f.path}"
           end
