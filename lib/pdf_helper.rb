@@ -1,5 +1,6 @@
 module PdfHelper
   require 'wicked_pdf'
+  require 'wicked_pdf_tempfile'
 
   def self.included(base)
     base.class_eval do
@@ -18,7 +19,7 @@ module PdfHelper
 
   private
     def make_pdf(options = {})
-      html_string = render_to_string(:template => options[:template], :layout => options[:layout])
+      html_string = externals_to_absolute_path(render_to_string(:template => options[:template], :layout => options[:layout]))
       w = WickedPdf.new(options[:wkhtmltopdf])
       w.pdf_from_string(html_string, options)
     end
@@ -54,5 +55,9 @@ module PdfHelper
       end
 
       return options
+    end
+
+    def externals_to_absolute_path(html) 
+      html.gsub(/\/(stylesheets|images|system)\//) {|s| "http://#{request.host_with_port}/#{$1}/" } 
     end
 end
