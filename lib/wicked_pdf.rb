@@ -22,6 +22,7 @@ class WickedPdf
   end
 
   def pdf_from_string(string, options={})
+    files_to_delete = options[:files_to_delete]
     command_for_stdin_stdout = "#{@exe_path} #{parse_options(options)} -q - - " # -q for no errors on stdout
     p "*"*15 + command_for_stdin_stdout + "*"*15 unless defined?(Rails) and Rails.env != 'development'
     pdf, err = begin
@@ -33,6 +34,13 @@ class WickedPdf
     rescue Exception => e
       raise "Failed to execute #{@exe_path}: #{e}"
     end
+
+    if files_to_delete && files_to_delete.count > 0
+      files_to_delete.each do |fpath|
+        File.delete(fpath) if File.exists?(fpath)
+      end
+    end
+
     raise "PDF could not be generated!\n#{err}" if pdf and pdf.length == 0
     pdf
   end

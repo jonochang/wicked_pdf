@@ -43,18 +43,26 @@ module PdfHelper
     # Given an options hash, prerenders content for the header and footer sections
     # to temp files and return a new options hash including the URLs to these files.
     def prerender_header_and_footer(options)
+      files_to_delete = []
       [:header, :footer].each do |hf|
         if options[hf] && options[hf][:html] && options[hf][:html][:template]
-          WickedPdfTempfile.open("wicked_pdf.html") do |f|
+          File.open("/tmp/wicked_pdf_hf_#{rand}.html", "w") do |f|
+            
             html_string = externals_to_absolute_path(render_to_string(:template => options[hf][:html][:template],
                                   :layout => options[:layout]))
             f << html_string
-            #options[hf][:html].delete(:template)
+            f.flush
+
+            options[hf][:html].delete(:template)
             options[hf][:html][:url] = "file://#{f.path}"
+            
+            files_to_delete << f.path
+
           end
         end
       end
 
+      options[:files_to_delete] = files_to_delete
       return options
     end
 
