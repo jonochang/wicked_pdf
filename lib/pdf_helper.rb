@@ -49,7 +49,7 @@ module PdfHelper
             html_string = externals_to_absolute_path(render_to_string(:template => options[hf][:html][:template],
                                   :layout => options[:layout]))
             f << html_string
-            options[hf][:html].delete(:template)
+            #options[hf][:html].delete(:template)
             options[hf][:html][:url] = "file://#{f.path}"
           end
         end
