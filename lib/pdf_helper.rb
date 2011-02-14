@@ -48,8 +48,16 @@ module PdfHelper
         if options[hf] && options[hf][:html] && options[hf][:html][:template]
           File.open("/tmp/wicked_pdf_hf_#{rand}.html", "w") do |f|
             
-            html_string = externals_to_absolute_path(render_to_string(:template => options[hf][:html][:template],
-                                  :layout => options[:layout]))
+            options_for_render = {
+              :template => options[hf][:html][:template],
+              :layout => options[:layout]
+            }
+
+            options_for_render.merge! {:layout => options[hf][:html][:layout]}
+
+            html_string = externals_to_absolute_path(
+                            render_to_string(options_for_render)
+                          )
             f << html_string
             f.flush
 
