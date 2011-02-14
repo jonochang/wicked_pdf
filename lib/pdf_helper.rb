@@ -53,7 +53,7 @@ module PdfHelper
               :layout => options[:layout]
             }
 
-            options_for_render.merge! {:layout => options[hf][:html][:layout]}
+            options_for_render[:layout] = options[hf][:html][:layout] if options[hf][:html].has_key?(:layout)
 
             html_string = externals_to_absolute_path(
                             render_to_string(options_for_render)
