@@ -26,7 +26,7 @@ module PdfHelper
     options = prerender_header_and_footer(options)
     pdf_content = make_pdf(options)
 
-    save_file_path = File.join(save_folder_path, "#{rand}.pdf")
+    save_file_path = options[:save_to_file] #File.join(save_folder_path, "#{rand}.pdf")
     File.open(save_file_path, 'wb') {|file| file << pdf_content } 
   end
 
