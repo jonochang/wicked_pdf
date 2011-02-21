@@ -17,6 +17,19 @@ module PdfHelper
     end
   end
 
+  def save_wicked_pdf_to save_folder_path, options = {}
+    options[:wkhtmltopdf] ||= nil
+    options[:layout] ||= false
+    options[:template] ||= File.join(controller_path, action_name)
+    options[:disposition] ||= "inline"
+
+    options = prerender_header_and_footer(options)
+    pdf_content = make_pdf(options)
+
+    save_file_path = File.join(save_folder_path, "#{rand}.pdf")
+    File.open(save_file_path, 'wb') {|file| file << pdf_content } 
+  end
+
   private
     def make_pdf(options = {})
       html_string = externals_to_absolute_path(render_to_string(:template => options[:template], :layout => options[:layout]))
