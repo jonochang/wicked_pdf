@@ -17,7 +17,7 @@ module PdfHelper
     end
   end
 
-  def save_wicked_pdf_to save_folder_path, options = {}
+  def save_wicked_pdf_to(options = {})
     options[:wkhtmltopdf] ||= nil
     options[:layout] ||= false
     options[:template] ||= File.join(controller_path, action_name)
