@@ -192,3 +192,9 @@ You may have noticed: this plugin is heavily inspired by the PrinceXML plugin [p
 ### Awesome Peoples
 
 Also, thanks to [galdomedia](http://github.com/galdomedia) and [jcrisp](http://github.com/jcrisp) and [lleirborras](http://github.com/lleirborras), [tiennou](http://github.com/tiennou), and everyone else for all their hard work and patience with my delays in merging in their enhancements.
+
+
+### Known Issues
+
+- developing in Rails Webrick can cause wkhtmltopdf to block while waiting for Webrick to serve files. I'm considering using a simple method to access off the disk instead of via the webserver.
+- current use of popen3 may cause a deadlock
