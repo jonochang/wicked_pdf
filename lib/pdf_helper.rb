@@ -18,7 +18,7 @@ module PdfHelper
   end
 
   def save_wicked_pdf_to(options = {})
-    prepare_options(options)
+    options = prepare_options(options)
     pdf_content = make_pdf(options)
 
     save_file_path = options[:save_to_file] #File.join(save_folder_path, "#{rand}.pdf")
@@ -33,7 +33,7 @@ module PdfHelper
       options[:template] ||= File.join(controller_path, action_name)
       options[:disposition] ||= "inline"
 
-      options = prerender_header_and_footer(options)
+      prerender_header_and_footer(options)
     end
 
     def make_pdf(options = {})
@@ -43,7 +43,7 @@ module PdfHelper
     end
 
     def make_and_send_pdf(pdf_name, options = {})
-      prepare_options(options)
+      options = prepare_options(options)
       
       if options[:show_as_html]
         render :template => options[:template], :layout => options[:layout], :content_type => "text/html"
