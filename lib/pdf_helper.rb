@@ -60,7 +60,7 @@ module PdfHelper
       files_to_delete = []
       [:header, :footer].each do |hf|
         if options[hf] && options[hf][:html] && options[hf][:html][:template]
-          File.open("/tmp/wicked_pdf_hf_#{rand}.html", "w") do |f|
+          File.open(File.join(Dir.tmpdir, "wicked_pdf_hf_#{rand}.html"), "w") do |f|
             
             options_for_render = {
               :template => options[hf][:html][:template],
