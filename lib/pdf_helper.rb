@@ -11,19 +11,14 @@ module PdfHelper
   def render_with_wicked_pdf(options = nil, *args, &block)
     if options.is_a?(Hash) && options.has_key?(:pdf)
       logger.info '*'*15 + 'WICKED' + '*'*15
-      make_and_send_pdf(options.delete(:pdf), (WickedPdf.config || {}).merge(options))
+      make_and_send_pdf(options.delete(:pdf), options)
     else
       render_without_wicked_pdf(options, *args, &block)
     end
   end
 
   def save_wicked_pdf_to(options = {})
-    options[:wkhtmltopdf] ||= nil
-    options[:layout] ||= false
-    options[:template] ||= File.join(controller_path, action_name)
-    options[:disposition] ||= "inline"
-
-    options = prerender_header_and_footer(options)
+    prepare_options(options)
     pdf_content = make_pdf(options)
 
     save_file_path = options[:save_to_file] #File.join(save_folder_path, "#{rand}.pdf")
@@ -31,6 +26,16 @@ module PdfHelper
   end
 
   private
+    def prepare_options(options = {})
+      options = (WickedPdf.config || {}).merge(options)
+      options[:wkhtmltopdf] ||= nil
+      options[:layout] ||= false
+      options[:template] ||= File.join(controller_path, action_name)
+      options[:disposition] ||= "inline"
+
+      options = prerender_header_and_footer(options)
+    end
+
     def make_pdf(options = {})
       html_string = externals_to_absolute_path(render_to_string(:template => options[:template], :layout => options[:layout]))
       w = WickedPdf.new(options[:wkhtmltopdf])
@@ -38,12 +43,8 @@ module PdfHelper
     end
 
     def make_and_send_pdf(pdf_name, options = {})
-      options[:wkhtmltopdf] ||= nil
-      options[:layout] ||= false
-      options[:template] ||= File.join(controller_path, action_name)
-      options[:disposition] ||= "inline"
-
-      options = prerender_header_and_footer(options)
+      prepare_options(options)
+      
       if options[:show_as_html]
         render :template => options[:template], :layout => options[:layout], :content_type => "text/html"
       else
