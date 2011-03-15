@@ -25,15 +25,19 @@ class WickedPdf
     files_to_delete = options[:files_to_delete]
     command_for_stdin_stdout = "#{@exe_path} #{parse_options(options)} -q - - " # -q for no errors on stdout
     p "*"*15 + command_for_stdin_stdout + "*"*15 unless defined?(Rails) and Rails.env != 'development'
-    pdf, err = begin
-      Open3.popen3(command_for_stdin_stdout) do |stdin, stdout, stderr|
+    pdf, err, exit_status = begin
+      Open3.popen3(command_for_stdin_stdout) do |stdin, stdout, stderr, wait_thr|
+        pid = wait_thr.pid
         stdin.write(string)
         stdin.close
-        [stdout.read, stderr.read]
+        e_status = wait_thr.value
+        [stdout.read, stderr.read, e_status]
       end
     rescue Exception => e
       raise "Failed to execute #{@exe_path}: #{e}"
     end
+
+    p "#{'*'*15} #{exit_status} "
 
     if files_to_delete && files_to_delete.count > 0
       files_to_delete.each do |fpath|
