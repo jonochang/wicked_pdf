@@ -23,7 +23,7 @@ class WickedPdf
 
   def pdf_from_string(string, options={})
     files_to_delete = options[:files_to_delete]
-    command_for_stdin_stdout = "#{@exe_path} #{parse_options(options)} -q - - " # -q for no errors on stdout
+    command_for_stdin_stdout = "#{@exe_path} #{parse_options(options)} --load-error-handling ignore -q - - " # -q for no errors on stdout
     p "*"*15 + command_for_stdin_stdout + "*"*15 unless defined?(Rails) and Rails.env != 'development'
     pdf, err = begin
       Open3.popen3(command_for_stdin_stdout) do |stdin, stdout, stderr|
